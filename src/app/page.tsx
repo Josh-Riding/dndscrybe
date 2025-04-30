@@ -1,69 +1,145 @@
+import Button from "./_components/Button";
+import { siteConfig } from "@/config/site";
+import { auth } from "@/server/auth";
+import { HydrateClient } from "@/trpc/server";
 import Link from "next/link";
 
-import { LatestPost } from "@/app/_components/post";
-import { auth } from "@/server/auth";
-import { api, HydrateClient } from "@/trpc/server";
-
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
   const session = await auth();
 
   if (session?.user) {
-    void api.post.getLatest.prefetch();
   }
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
+      <div className="flex min-h-screen flex-col bg-[#1e1e1e] text-[#f5f5f5]">
+        <section
+          className="relative flex flex-col items-center justify-center bg-cover bg-center px-4 py-24 text-center"
+          style={{ backgroundImage: "url('/photo-wall-texture-pattern.jpg')" }}
+        >
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="relative z-10">
+            <h1 className="font-serif text-5xl font-bold text-[#df2935] drop-shadow-md md:text-6xl">
+              Your RPG Sessions. <br /> Transcribed. <br />
+              Summarized. <br /> Remembered.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg text-[#cccccc]">
+              Upload your audio. Get back beautifully written session notes.
             </p>
-
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-center text-2xl text-white">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
+            <div className="mt-10">
+              <Link href="/upload">
+                <Button className="rounded-2xl bg-[#df2935] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#b2222b]">
+                  Begin the Lorekeeper’s Log
+                </Button>
               </Link>
             </div>
           </div>
+        </section>
 
-          {session?.user && <LatestPost />}
-        </div>
-      </main>
+        <section className="bg-[#2a2a2a] py-16 text-center">
+          <h2 className="text-4xl font-bold text-[#f5f5f5]">Arcane Features</h2>
+          <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-8 px-6 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                title: "Auto Transcription",
+                description:
+                  "Convert spoken words into accurate text, instantly.",
+              },
+              {
+                title: "Summarized Logs",
+                description: "Get concise campaign notes after every session.",
+              },
+              {
+                title: "Private & Secure",
+                description: "Your sessions stay yours—encrypted and safe.",
+              },
+              {
+                title: "Built for RPG",
+                description: "Crafted with adventurers, for adventurers.",
+              },
+            ].map(({ title, description }) => (
+              <div
+                key={title}
+                className="relative overflow-hidden rounded-xl bg-[#1e1e1e] p-6 text-left shadow-md transition-shadow hover:shadow-lg hover:shadow-[#df293580]"
+              >
+                <h3 className="mb-2 text-xl font-bold text-[#f5f5f5]">
+                  {title}
+                </h3>
+                <p className="text-sm leading-relaxed text-[#cccccc]">
+                  {description}
+                </p>
+                <span className="animate-flicker pointer-events-none absolute top-0 left-0 h-full w-full bg-gradient-to-r from-[#f5deb3]/10 via-[#f5deb3]/20 to-[#f5deb3]/10 blur-2xl"></span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-5xl bg-[#1e1e1e] px-6 py-20">
+          <h2 className="text-center text-4xl font-bold text-[#df2935]">
+            How It Works
+          </h2>
+          <div className="mt-12 space-y-10">
+            {[
+              {
+                title: "Upload Recording",
+                description: "Drop your session audio into the spell circle.",
+              },
+              {
+                title: "Let the Magic Happen",
+                description: "AI transcribes and summarizes your campaign.",
+              },
+              {
+                title: "Read & Remember",
+                description:
+                  "Review elegant notes to keep your adventure on track.",
+              },
+            ].map(({ title, description }, i) => (
+              <div
+                key={title}
+                className="border-l-4 border-[#df2935] pl-6 text-lg"
+              >
+                <h3 className="mb-2 text-2xl font-semibold text-[#f5f5f5]">
+                  {`Step ${i + 1}: ${title}`}
+                </h3>
+                <p className="text-[#cccccc]">{description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-[#2a2a2a] py-20 text-center">
+          <h2 className="text-3xl font-bold text-[#f5f5f5]">
+            Remember Every Chapter of Your Campaign
+          </h2>
+          <p className="mt-4 text-[#cccccc]">
+            Sign up now and make every session unforgettable.
+          </p>
+          <Link href="/upload">
+            {" "}
+            <Button className="mt-8 rounded-2xl bg-[#df2935] px-6 py-3 text-lg text-white hover:bg-[#b2222b]">
+              Upload Your First Session
+            </Button>
+          </Link>
+        </section>
+
+        <footer className="border-t border-[#3a3a3a] bg-[#1e1e1e] py-8 text-center text-sm text-[#888]">
+          <p>© 2025 {siteConfig.name}. All rights reserved.</p>
+          <div className="mt-2 space-x-4">
+            <a href="#" className="hover:text-[#df2935]">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-[#df2935]">
+              About
+            </a>
+            <a href="#" className="hover:text-[#df2935]">
+              GitHub
+            </a>
+            <a href="#" className="hover:text-[#df2935]">
+              Contact
+            </a>
+          </div>
+        </footer>
+      </div>
     </HydrateClient>
   );
 }
