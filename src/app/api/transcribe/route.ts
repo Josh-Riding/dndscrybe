@@ -53,6 +53,7 @@ export async function POST(req: Request) {
 
     const created = await api.transcribe.create({
       transcription: transcriptionText,
+      title: file.name,
     });
 
     if (!created) {
