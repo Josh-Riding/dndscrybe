@@ -91,7 +91,7 @@ export default async function Home() {
               {
                 title: "Read & Remember",
                 description:
-                  "Review elegant notes to keep your adventure on track.",
+                  "Review and download elegant notes to keep your adventure on track.",
               },
             ].map(({ title, description }, i) => (
               <div
@@ -104,6 +104,37 @@ export default async function Home() {
                 <p className="text-[#cccccc]">{description}</p>
               </div>
             ))}
+          </div>
+        </section>
+        <div className="my-16 flex items-center justify-center">
+          <div className="h-px w-3/4 bg-gradient-to-r from-[#df2935] via-[#f5f5f5]/20 to-[#df2935]" />
+        </div>
+
+        <section className="bg-[#1e1e1e] px-6 py-20 text-center">
+          <h2 className="text-4xl font-bold text-[#df2935]">
+            Why {siteConfig.name}?
+          </h2>
+          <div className="mx-auto mt-6 max-w-3xl space-y-6 text-lg leading-relaxed text-[#cccccc]">
+            <p>Because stories matter. Because memory is fragile.</p>
+            <p>
+              How many times have you sat with friends, laughing, trying to
+              piece together that incredible moment — when you fought... was it
+              a God? No, maybe a Demon? No, that was from the older session. The
+              details blur, the timelines tangle, and slowly, the legends slip
+              away.
+            </p>
+            <p>
+              And then there’s the classic: the GM flips through a blank
+              notebook, squinting, “Did I give you that magic sword last
+              session... or was that someone else?” A map half-sketched. A
+              villain’s name forgotten. The thread of the tale begins to fray.
+            </p>
+            <p>
+              {siteConfig.name} exists so your adventures are never lost to
+              time. Every battle, every twist of fate, every heroic stand —
+              remembered as it was, not as it was almost recalled. Here, for
+              GM's and players alike, your legends live forever.
+            </p>
           </div>
         </section>
 
@@ -121,24 +152,6 @@ export default async function Home() {
             </Button>
           </Link>
         </section>
-
-        <footer className="border-t border-[#3a3a3a] bg-[#1e1e1e] py-8 text-center text-sm text-[#888]">
-          <p>© 2025 {siteConfig.name}. All rights reserved.</p>
-          <div className="mt-2 space-x-4">
-            <a href="#" className="hover:text-[#df2935]">
-              Privacy
-            </a>
-            <a href="#" className="hover:text-[#df2935]">
-              About
-            </a>
-            <a href="#" className="hover:text-[#df2935]">
-              GitHub
-            </a>
-            <a href="#" className="hover:text-[#df2935]">
-              Contact
-            </a>
-          </div>
-        </footer>
       </div>
     </HydrateClient>
   );

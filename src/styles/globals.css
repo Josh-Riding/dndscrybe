@@ -4,3 +4,20 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  @keyframes flicker {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; }
+    80% { opacity: 0.8; }
+    90% { opacity: 1; }
+  }
+
+  .animate-flicker {
+    animation: flicker 3s infinite;
+  }
+}

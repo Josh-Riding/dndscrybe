@@ -1,6 +1,7 @@
 import { relations, sql } from "drizzle-orm";
 import { index, pgTableCreator, primaryKey } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
+import { pgEnum } from "drizzle-orm/pg-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -9,6 +10,7 @@ import { type AdapterAccount } from "next-auth/adapters";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const createTable = pgTableCreator((name) => `dnd-scribe_${name}`);
+export const roleEnum = pgEnum("role", ["user", "assistant"]);
 
 export const posts = createTable(
   "post",
@@ -106,3 +108,54 @@ export const verificationTokens = createTable(
   }),
   (t) => [primaryKey({ columns: [t.identifier, t.token] })],
 );
+
+export const transcriptions = createTable("transcriptions", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  title: d.varchar({ length: 256 }),
+  transcriptionText: d.text(),
+  createdById: d
+    .varchar({ length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+}));
+
+export const transcriptionSummary = createTable(
+  "transcription_summaries",
+  (d) => ({
+    id: d.integer().primaryKey(),
+    summaryText: d.text(),
+    createdById: d
+      .varchar({ length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  }),
+);
+
+export const transcriptionsRelations = relations(transcriptions, ({ one }) => ({
+  summary: one(transcriptionSummary, {
+    fields: [transcriptions.id],
+    references: [transcriptionSummary.id],
+  }),
+}));
+
+export const chatMessages = createTable("chat_messages", (d) => ({
+  id: d.serial().primaryKey(),
+  sessionId: d
+    .integer()
+    .notNull()
+    .references(() => transcriptions.id, { onDelete: "cascade" }),
+  role: roleEnum("role").notNull(),
+  content: d.text().notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+}));
