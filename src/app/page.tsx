@@ -1,117 +1,184 @@
 import Button from "./_components/Button";
 import { siteConfig } from "@/config/site";
-import { auth } from "@/server/auth";
 import { HydrateClient } from "@/trpc/server";
 import Link from "next/link";
+import Image from "next/image";
+import { FAQSection } from "./_components/FAQ";
+import HowItWorks from "./_components/HowItWorks";
 
 export default async function Home() {
-  const session = await auth();
-
-  if (session?.user) {
-  }
-
   return (
     <HydrateClient>
       <div className="flex min-h-screen flex-col bg-[#1e1e1e] text-[#f5f5f5]">
         <section
-          className="relative flex flex-col items-center justify-center bg-cover bg-center px-4 py-24 text-center"
+          className="relative flex min-h-screen flex-col items-center justify-center bg-cover bg-fixed bg-center px-4 py-24 text-center"
           style={{ backgroundImage: "url('/photo-wall-texture-pattern.jpg')" }}
         >
           <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10">
-            <h1 className="font-serif text-5xl font-bold text-[#df2935] drop-shadow-md md:text-6xl">
+            <h1 className="font-serif text-5xl font-bold text-[#f5f5f5] drop-shadow-md md:text-6xl">
               Your RPG Sessions. <br /> Transcribed. <br />
               Summarized. <br /> Remembered.
             </h1>
             <p className="mt-6 max-w-xl text-lg text-[#cccccc]">
-              Upload your audio. Get back beautifully written session notes.
+              Upload your session audio. <br />
+              Get clear, organized notes. <br />
+              Chat with your notes to uncover every detail.
             </p>
+
             <div className="mt-10">
               <Link href="/upload">
                 <Button className="rounded-2xl bg-[#df2935] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#b2222b]">
-                  Begin the Lorekeeper’s Log
+                  Get Your Adventure Transcribed Now
                 </Button>
               </Link>
+              <p className="mt-2 text-xs font-semibold tracking-wide text-white/70">
+                Start for Free
+              </p>
+              <br />
+              <div className="mt-8 flex flex-col items-center">
+                <div className="flex -space-x-4">
+                  {[
+                    "/avatars/josh.jpg",
+                    "/avatars/guy2.jpg",
+                    "/avatars/one.jpg",
+                    "/avatars/tree.jpg",
+                    "/avatars/guy3.jpg",
+                  ].map((src, idx) => (
+                    <Image
+                      key={idx}
+                      src={src}
+                      alt="User avatar"
+                      width={48}
+                      height={48}
+                      className="h-12 w-12 rounded-full border-2 border-white/20 object-cover"
+                    />
+                  ))}
+                </div>
+                <p className="mt-3 text-sm text-[#cccccc]">
+                  Loved by players, praised by GMs, <br />
+                  and never rolls a disadvantage.
+                </p>
+              </div>
             </div>
           </div>
         </section>
-
+        <HowItWorks />
         <section className="bg-[#2a2a2a] py-16 text-center">
-          <h2 className="text-4xl font-bold text-[#f5f5f5]">Arcane Features</h2>
+          <h2 className="font-serif text-5xl tracking-tight text-[#f5f5f5]">
+            Arcane Features
+            <span className="mx-auto mt-4 block h-[2px] w-12 bg-[#77b3d1]" />
+          </h2>
+
           <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-8 px-6 md:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 title: "Auto Transcription",
                 description:
-                  "Convert spoken words into accurate text, instantly.",
+                  "Turn your session audio into accurate, readable text instantly.",
               },
               {
                 title: "Summarized Logs",
-                description: "Get concise campaign notes after every session.",
+                description:
+                  "Get clean, concise campaign notes after every session.",
               },
               {
-                title: "Private & Secure",
-                description: "Your sessions stay yours—encrypted and safe.",
+                title: "Always Available",
+                description:
+                  "Access your session history anytime, on any device.",
               },
               {
-                title: "Built for RPG",
-                description: "Crafted with adventurers, for adventurers.",
+                title: "Chat with Your Notes",
+                description:
+                  "Ask questions and revisit details using AI-powered search.",
               },
             ].map(({ title, description }) => (
               <div
                 key={title}
-                className="relative overflow-hidden rounded-xl bg-[#1e1e1e] p-6 text-left shadow-md transition-shadow hover:shadow-lg hover:shadow-[#df293580]"
+                className="flex h-full flex-col justify-between rounded-lg border border-[#3a3a3a] bg-[#1c1c1c] p-6 text-left transition-colors hover:border-[#77b3d1]"
               >
-                <h3 className="mb-2 text-xl font-bold text-[#f5f5f5]">
+                <h3 className="mb-3 text-lg font-semibold tracking-wide text-[#f5f5f5]">
                   {title}
                 </h3>
-                <p className="text-sm leading-relaxed text-[#cccccc]">
+                <p className="flex-grow text-sm leading-relaxed text-[#bbbbbb]">
                   {description}
                 </p>
-                <span className="animate-flicker pointer-events-none absolute top-0 left-0 h-full w-full bg-gradient-to-r from-[#f5deb3]/10 via-[#f5deb3]/20 to-[#f5deb3]/10 blur-2xl"></span>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="mx-auto max-w-5xl bg-[#1e1e1e] px-6 py-20">
-          <h2 className="text-center text-4xl font-bold text-[#df2935]">
-            How It Works
+        <div className="my-16 flex items-center justify-center">
+          <div className="h-px w-3/4 bg-gradient-to-r from-[#77b3d1] via-[#f5f5f5]/20 to-[#77b3d1]" />
+        </div>
+        <section className="bg-[#1e1e1e] px-6 py-20 text-center">
+          <h2 className="text-4xl font-bold text-[#f5f5f5]">
+            Trusted by Adventurers Everywhere
           </h2>
-          <div className="mt-12 space-y-10">
+          <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                title: "Upload Recording",
-                description: "Drop your session audio into the spell circle.",
+                quote:
+                  "I finally remembered what I said three sessions ago. Game-changing.",
+                name: "Bob, Game Master/Player",
+                image: "/avatars/guy2.jpg",
               },
               {
-                title: "Let the Magic Happen",
-                description: "AI transcribes and summarizes your campaign.",
+                quote:
+                  "I really don't like writing down details during a session in the middle of the action. This lets me focus on the game and have more fun!",
+                name: "Josh, Game Master/Player",
+                image: "/avatars/josh.jpg",
+              },
+
+              {
+                quote:
+                  "I use it after every game night. It's like having a scrybe 😉 with perfect memory.",
+                name: "Lauren, Player",
+                image: "/avatars/one.jpg",
               },
               {
-                title: "Read & Remember",
-                description:
-                  "Review and download elegant notes to keep your adventure on track.",
+                quote:
+                  "The AI summaries are so good I print them out and bring them to the next session.",
+                name: "Myla, Player",
+                image: "/avatars/tree.jpg",
               },
-            ].map(({ title, description }, i) => (
+              {
+                quote:
+                  "I'm too lazy to write down everything, glad I found this.",
+                name: "Ryan, Game Master/Player",
+                image: "/avatars/guy4.jpg",
+              },
+              {
+                quote:
+                  "Clean, fast, and spooky accurate. I keep the chat feature open while we play.",
+                name: "Keith, Game Master",
+                image: "/avatars/guy3.jpg",
+              },
+            ].map(({ quote, name, image }) => (
               <div
-                key={title}
-                className="border-l-4 border-[#df2935] pl-6 text-lg"
+                key={name}
+                className="flex flex-col items-center rounded-xl bg-[#2a2a2a] p-6 shadow-md hover:shadow-lg hover:shadow-[#df293580]"
               >
-                <h3 className="mb-2 text-2xl font-semibold text-[#f5f5f5]">
-                  {`Step ${i + 1}: ${title}`}
-                </h3>
-                <p className="text-[#cccccc]">{description}</p>
+                <Image
+                  src={image || "/avatars/dnd.jpg"}
+                  alt={name}
+                  width={64}
+                  height={64}
+                  className="mb-4 h-16 w-16 rounded-full object-cover"
+                />
+                <p className="mb-4 text-center text-sm text-[#cccccc] italic">
+                  "{quote}"
+                </p>
+                <p className="text-center text-sm font-semibold text-[#f5f5f5]">
+                  — {name}
+                </p>
               </div>
             ))}
           </div>
         </section>
-        <div className="my-16 flex items-center justify-center">
-          <div className="h-px w-3/4 bg-gradient-to-r from-[#df2935] via-[#f5f5f5]/20 to-[#df2935]" />
-        </div>
 
         <section className="bg-[#1e1e1e] px-6 py-20 text-center">
-          <h2 className="text-4xl font-bold text-[#df2935]">
+          <h2 className="text-4xl font-bold text-[#f5f5f5]">
             Why {siteConfig.name}?
           </h2>
           <div className="mx-auto mt-6 max-w-3xl space-y-6 text-lg leading-relaxed text-[#cccccc]">
@@ -152,6 +219,7 @@ export default async function Home() {
             </Button>
           </Link>
         </section>
+        <FAQSection />
       </div>
     </HydrateClient>
   );
