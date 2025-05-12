@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
           </h2>
           <p className="leading-relaxed text-[#cccccc]">
             We built this platform for storytellers — and storytellers deserve
-            respect. When you upload your session audio, it's your world, your
+            respect. When you upload your session audio, it’s your world, your
             creation. We’re just the scribes, helping you remember.
           </p>
           <p className="leading-relaxed text-[#cccccc]">
