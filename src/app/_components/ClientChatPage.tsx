@@ -66,10 +66,11 @@ export default function ClientChatPage({
         }),
       });
 
-      const data: {
+      const data = (await res.json()) as {
         error?: string;
         messages: { role: "user" | "assistant"; content: string }[];
-      } = await res.json();
+      };
+
       if (!res.ok) throw new Error(data.error ?? "Something went wrong");
 
       setMessagesById((prev) => ({

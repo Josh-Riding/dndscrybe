@@ -88,7 +88,7 @@ export default function UploadPage() {
       body: formData,
     });
 
-    const result: TranscriptionResponse = await res.json();
+    const result = (await res.json()) as TranscriptionResponse;
 
     setLoading(false);
     stopAudio();

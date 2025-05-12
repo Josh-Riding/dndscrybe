@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import { db } from "@/server/db";
 import { chatMessages, transcriptions } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
@@ -6,10 +7,10 @@ import { openai } from "@/app/lib/openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
 export async function POST(req: NextRequest) {
-  const {
-    transcriptionId,
-    userInput,
-  }: { transcriptionId: number; userInput: string } = await req.json();
+  const { transcriptionId, userInput } = (await req.json()) as {
+    transcriptionId: number;
+    userInput: string;
+  };
 
   if (!transcriptionId || !userInput) {
     return NextResponse.json({ error: "Missing input" }, { status: 400 });

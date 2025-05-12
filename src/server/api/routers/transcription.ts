@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { v4 as uuidv4 } from "uuid";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { transcriptions, chatMessages } from "@/server/db/schema";
