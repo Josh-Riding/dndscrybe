@@ -43,7 +43,7 @@ export default function ClientChatPage({
     }
   }, [messagesQuery.data, selectedId]);
 
-  const messages = selectedId ? messagesById[selectedId] || [] : [];
+  const messages = selectedId ? (messagesById[selectedId] ?? []) : [];
 
   const handleSubmit = async () => {
     if (!input.trim() || !selectedId) return;
@@ -51,7 +51,7 @@ export default function ClientChatPage({
     const newUserMessage = { role: "user" as const, content: input };
     setMessagesById((prev) => ({
       ...prev,
-      [selectedId]: [...(prev[selectedId] || []), newUserMessage],
+      [selectedId]: [...(prev[selectedId] ?? []), newUserMessage],
     }));
     setInput("");
     setLoading(true);
@@ -66,21 +66,25 @@ export default function ClientChatPage({
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Something went wrong");
+      const data: {
+        error?: string;
+        messages: { role: "user" | "assistant"; content: string }[];
+      } = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Something went wrong");
 
       setMessagesById((prev) => ({
         ...prev,
         [selectedId]: data.messages,
       }));
     } catch (err) {
+      console.error(err);
       const errorMessage = {
         role: "assistant" as const,
         content: "An error occurred while processing your request.",
       };
       setMessagesById((prev) => ({
         ...prev,
-        [selectedId]: [...(prev[selectedId] || []), errorMessage],
+        [selectedId]: [...(prev[selectedId] ?? []), errorMessage],
       }));
     } finally {
       setLoading(false);
@@ -160,7 +164,7 @@ export default function ClientChatPage({
             className="sticky bottom-0 border-t border-[#333] bg-[#1e1e1e] p-4"
             onSubmit={(e) => {
               e.preventDefault();
-              handleSubmit();
+              void handleSubmit();
             }}
           >
             <div className="flex flex-col gap-2 sm:flex-row">
