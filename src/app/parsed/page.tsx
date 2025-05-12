@@ -40,7 +40,20 @@ export default async function ParsedPage() {
             </div>
           ) : (
             transcriptions.map((t) => (
-              <TranscriptionCard key={t.id} transcription={t} />
+              <TranscriptionCard
+                key={t.id}
+                transcription={{
+                  id: t.id,
+                  title: t.title ?? "Untitled",
+                  createdAt: t.createdAt.toISOString(),
+                  transcriptionText:
+                    t.transcriptionText ?? "Transcription Unavailable",
+                  summary: {
+                    summaryText:
+                      t.summary?.summaryText ?? "Summary Unavailable",
+                  },
+                }}
+              />
             ))
           )}
         </div>
