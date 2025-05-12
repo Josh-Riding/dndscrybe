@@ -6,7 +6,10 @@ import { openai } from "@/app/lib/openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
 export async function POST(req: NextRequest) {
-  const { transcriptionId, userInput } = await req.json();
+  const {
+    transcriptionId,
+    userInput,
+  }: { transcriptionId: number; userInput: string } = await req.json();
 
   if (!transcriptionId || !userInput) {
     return NextResponse.json({ error: "Missing input" }, { status: 400 });
