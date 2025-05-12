@@ -84,7 +84,7 @@ export default function Navbar() {
           ))}
           <button
             onClick={() => {
-              authLink.action();
+              void authLink.action(); //Error: Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator.
               setIsOpen(false);
             }}
             className="text-lg text-[#f5f5f5] transition-colors hover:text-[#df2935]"
