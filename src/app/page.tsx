@@ -167,7 +167,7 @@ export default async function Home() {
                   className="mb-4 h-16 w-16 rounded-full object-cover"
                 />
                 <p className="mb-4 text-center text-sm text-[#cccccc] italic">
-                  "{quote}"
+                  &ldquo;{quote}&rdquo;
                 </p>
                 <p className="text-center text-sm font-semibold text-[#f5f5f5]">
                   — {name}
@@ -200,7 +200,7 @@ export default async function Home() {
               {siteConfig.name} exists so your adventures are never lost to
               time. Every battle, every twist of fate, every heroic stand —
               remembered as it was, not as it was almost recalled. Here, for
-              GM's and players alike, your legends live forever.
+              GM&#39;s and players alike, your legends live forever.
             </p>
           </div>
         </section>
