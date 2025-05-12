@@ -36,7 +36,7 @@ export default function PricingPage() {
   const handleClick = async (path: string) => {
     if (path.startsWith("/api/checkout")) {
       const res = await fetch(path, { method: "POST" });
-      const data = await res.json();
+      const data: { url: string } = await res.json();
       if (data.url) window.location.href = data.url;
     } else {
       router.push(path);
