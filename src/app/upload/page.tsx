@@ -7,11 +7,16 @@ import type { DragEvent, ChangeEvent } from "react";
 import { noteTypeExamples } from "../lib/noteTypes";
 import { useRouter } from "next/navigation";
 
+interface TranscriptionResponse {
+  text: string;
+  summary: string;
+  error?: string;
+  details?: string;
+}
+
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
-  const [transcription, setTranscription] = useState("");
-  const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
   const [noteType, setNoteType] = useState("main");
 
@@ -20,7 +25,7 @@ export default function UploadPage() {
     e.preventDefault();
     setDragActive(false);
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type.startsWith("audio/")) {
+    if (droppedFile?.type.startsWith("audio/")) {
       setFile(droppedFile);
     }
   }
@@ -36,7 +41,7 @@ export default function UploadPage() {
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const selectedFile = e.target.files?.[0];
-    if (selectedFile && selectedFile.type.startsWith("audio/")) {
+    if (selectedFile?.type.startsWith("audio/")) {
       setFile(selectedFile);
     }
   }
@@ -48,8 +53,16 @@ export default function UploadPage() {
       const audio = new Audio("/tavern.mp3");
       audio.loop = true;
       audio.volume = 0.25;
-      audio.play();
-      audioRef.current = audio;
+
+      // Handle the promise returned by play() and catch any errors
+      audio
+        .play()
+        .then(() => {
+          audioRef.current = audio;
+        })
+        .catch((error) => {
+          console.error("Audio play error:", error);
+        });
     }
   }
 
@@ -75,7 +88,8 @@ export default function UploadPage() {
       body: formData,
     });
 
-    const result = await res.json();
+    const result: TranscriptionResponse = await res.json();
+
     setLoading(false);
     stopAudio();
 
@@ -83,8 +97,7 @@ export default function UploadPage() {
       router.push(`/parsed`);
     } else {
       setLoading(false);
-      setTranscription("Something went wrong.");
-      console.error("Error:", result.error || result.details);
+      console.error("Error:", result.error ?? result.details);
     }
   }
 
@@ -154,24 +167,6 @@ export default function UploadPage() {
       >
         {loading ? "Uploading..." : "Begin Transcription"}
       </button>
-
-      {transcription && (
-        <div className="mt-12 w-full max-w-3xl space-y-8">
-          <section className="rounded-2xl bg-[#2a2a2a] p-6 shadow-md">
-            <h2 className="mb-4 text-2xl font-bold text-[#f5f5f5]">
-              Full Transcription
-            </h2>
-            <p className="whitespace-pre-wrap text-[#cccccc]">
-              {transcription}
-            </p>
-          </section>
-
-          <section className="rounded-2xl bg-[#2a2a2a] p-6 shadow-md">
-            <h2 className="mb-4 text-2xl font-bold text-[#f5f5f5]">Summary</h2>
-            <p className="whitespace-pre-wrap text-[#cccccc]">{summary}</p>
-          </section>
-        </div>
-      )}
     </div>
   );
 }
