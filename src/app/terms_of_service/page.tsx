@@ -19,8 +19,8 @@ export default function TermsOfServicePage() {
       <Section title="2. User Content">
         You retain ownership of all content (including audio files,
         transcriptions, and summaries) you upload to or generate through the
-        Service ("User Content"). By uploading User Content, you grant us a
-        non-exclusive, limited license to process, store, and display the
+        Service (&quot;User Content&quot;). By uploading User Content, you grant
+        us a non-exclusive, limited license to process, store, and display the
         content as necessary to operate the Service.
         <br />
         <br />
@@ -66,10 +66,10 @@ export default function TermsOfServicePage() {
       </Section>
 
       <Section title="6. Disclaimers">
-        The Service is provided "as is" and "as available" without warranties of
-        any kind. We do not guarantee the accuracy, reliability, or completeness
-        of any transcription, summary, or content produced by the Service. You
-        use the Service at your own risk.
+        The Service is provided &quot;as is&quot; and &quot;as available&quot;
+        without warranties of any kind. We do not guarantee the accuracy,
+        reliability, or completeness of any transcription, summary, or content
+        produced by the Service. You use the Service at your own risk.
       </Section>
 
       <Section title="7. Limitation of Liability">
