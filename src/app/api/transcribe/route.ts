@@ -8,15 +8,36 @@ import { api } from "@/trpc/server";
 import { noteTypes } from "@/app/lib/noteTypes";
 import { openai } from "@/app/lib/openai";
 
+type DeepgramTranscriptionResult = {
+  results?: {
+    channels?: {
+      alternatives?: {
+        paragraphs?: {
+          transcript: string;
+        };
+      }[];
+    }[];
+  };
+};
+
+type ErrorWithResponse = {
+  response?: {
+    text?: () => Promise<string>;
+  };
+};
+
 export const dynamic = "force-dynamic";
 const { DEEPGRAM_API_KEY } = process.env;
 
 const deepgram = createClient(DEEPGRAM_API_KEY);
 
-function formatTranscriptWithSpeakers(result: any): string {
+function formatTranscriptWithSpeakers(
+  result: DeepgramTranscriptionResult,
+): string {
+  //any type
   const words =
-    result?.results?.channels?.[0]?.alternatives?.[0]?.paragraphs?.transcript ||
-    [];
+    result?.results?.channels?.[0]?.alternatives?.[0]?.paragraphs?.transcript ??
+    "";
   return words;
 }
 
@@ -100,16 +121,15 @@ Be concise, avoid restating everything, and focus only on what players will want
   } catch (err: unknown) {
     console.error("[API] Processing failed:", err);
 
-    if (
-      err &&
-      typeof err === "object" &&
-      "response" in err &&
-      (err as any).response
-    ) {
+    if (typeof err === "object" && err !== null && "response" in err) {
+      const errorWithResponse = err as ErrorWithResponse;
+
       try {
-        const errorText = await (err as any).response.text();
+        const errorText = await errorWithResponse.response?.text?.();
         console.error("[DEEPGRAM ERROR]", errorText);
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Failed to log Deepgram error:", e);
+      }
     }
 
     return NextResponse.json(
