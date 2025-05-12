@@ -9,7 +9,13 @@ import Modal from "./Modal";
 export default function TranscriptionCard({
   transcription,
 }: {
-  transcription: any;
+  transcription: {
+    id: number;
+    title: string;
+    createdAt: string;
+    transcriptionText: string;
+    summary: { summaryText: string };
+  };
 }) {
   const [title, setTitle] = useState(transcription.title);
   const [isEditing, setIsEditing] = useState(false);
@@ -19,8 +25,8 @@ export default function TranscriptionCard({
 
   const utils = api.useUtils();
   const editMutation = api.transcribe.edit.useMutation({
-    onSuccess: () => {
-      utils.invalidate();
+    onSuccess: async () => {
+      await utils.invalidate();
       setIsEditing(false);
     },
   });
