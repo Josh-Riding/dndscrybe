@@ -36,8 +36,9 @@ export default function HowItWorks() {
               description: "Import your recording to kick things off.",
             },
             {
-              title: "Let the Magic Happen",
-              description: "AI transcribes and summarizes your campaign.",
+              title: "Powerful AI Transcribes In Seconds",
+              description:
+                "AI transcribes and then summarizes your campaign in a style you choose.",
             },
             {
               title: "Chat with Your Notes",
@@ -47,7 +48,7 @@ export default function HowItWorks() {
             {
               title: "Read & Remember",
               description:
-                "Review and download perfect notes to keep your adventure on track.",
+                "Review, download, and share perfect notes to keep your adventure on track.",
             },
           ].map(({ title, description }, i) => (
             <div

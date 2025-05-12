@@ -149,6 +149,7 @@ export default function ClientChatPage({
                     ? "ml-auto bg-[#df2935] text-white"
                     : "mr-auto border border-[#444] bg-[#2a2a2a] text-[#cccccc]"
                 }`}
+                style={{ whiteSpace: "pre-wrap" }}
               >
                 {msg.content}
               </div>

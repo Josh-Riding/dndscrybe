@@ -39,11 +39,11 @@ export default async function Home() {
               <div className="mt-8 flex flex-col items-center">
                 <div className="flex -space-x-4">
                   {[
-                    "/avatars/josh.jpg",
-                    "/avatars/guy2.jpg",
-                    "/avatars/one.jpg",
-                    "/avatars/tree.jpg",
-                    "/avatars/guy3.jpg",
+                    "/avatars/image2.jpg",
+                    "/avatars/image1.jpg",
+                    "/avatars/image3.jpg",
+                    "/avatars/image4.jpg",
+                    "/avatars/image6.jpg",
                   ].map((src, idx) => (
                     <Image
                       key={idx}
@@ -73,24 +73,24 @@ export default async function Home() {
           <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-8 px-6 md:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                title: "Auto Transcription",
+                title: "Clear the Noise",
                 description:
-                  "Turn your session audio into accurate, readable text instantly.",
+                  "Got background music or loud static? No problem. Our AI cleans up messy audio so it can hear what matters most.",
               },
               {
-                title: "Summarized Logs",
+                title: "Ask Your Notes",
                 description:
-                  "Get clean, concise campaign notes after every session.",
+                  "Forgot who had the magic item last game? Just ask! Talk to your transcript like a smart helper, great for players and game masters.",
               },
               {
-                title: "Always Available",
+                title: "Edit Anytime",
                 description:
-                  "Access your session history anytime, on any device.",
+                  "Want to add or fix something? You can update your notes online and save them forever. You and the AI make a great team.",
               },
               {
-                title: "Chat with Your Notes",
+                title: "Super Accurate",
                 description:
-                  "Ask questions and revisit details using AI-powered search.",
+                  "Our AI gets 95 out of 100 words right, way better than others. That means your notes will be clear, sharp, and ready to use.",
               },
             ].map(({ title, description }) => (
               <div
@@ -121,38 +121,38 @@ export default async function Home() {
                 quote:
                   "I finally remembered what I said three sessions ago. Game-changing.",
                 name: "Bob, Game Master/Player",
-                image: "/avatars/guy2.jpg",
+                image: "/avatars/image1.jpg",
               },
               {
                 quote:
                   "I really don't like writing down details during a session in the middle of the action. This lets me focus on the game and have more fun!",
                 name: "Josh, Game Master/Player",
-                image: "/avatars/josh.jpg",
+                image: "/avatars/image2.jpg",
               },
 
               {
                 quote:
                   "I use it after every game night. It's like having a scrybe 😉 with perfect memory.",
                 name: "Lauren, Player",
-                image: "/avatars/one.jpg",
+                image: "/avatars/image3.jpg",
               },
               {
                 quote:
                   "The AI summaries are so good I print them out and bring them to the next session.",
                 name: "Myla, Player",
-                image: "/avatars/tree.jpg",
+                image: "/avatars/image4.jpg",
               },
               {
                 quote:
                   "I'm too lazy to write down everything, glad I found this.",
                 name: "Ryan, Game Master/Player",
-                image: "/avatars/guy4.jpg",
+                image: "/avatars/image5.jpg",
               },
               {
                 quote:
                   "Clean, fast, and spooky accurate. I keep the chat feature open while we play.",
                 name: "Keith, Game Master",
-                image: "/avatars/guy3.jpg",
+                image: "/avatars/image6.jpg",
               },
             ].map(({ quote, name, image }) => (
               <div
