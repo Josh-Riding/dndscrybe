@@ -2,10 +2,11 @@
 
 import { siteConfig } from "@/config/site";
 import { useSession } from "next-auth/react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { DragEvent, ChangeEvent } from "react";
 import { noteTypeExamples } from "../lib/noteTypes";
 import { useRouter } from "next/navigation";
+import { api } from "@/trpc/react";
 
 interface TranscriptionResponse {
   text: string;
@@ -13,12 +14,42 @@ interface TranscriptionResponse {
   error?: string;
   details?: string;
 }
+const uploadToS3 = async (
+  file: File,
+  getPresignedUrl: ReturnType<typeof api.audio.getPresignedUrl.useMutation>,
+  notifyUploadComplete: ReturnType<
+    typeof api.audio.notifyUploadComplete.useMutation
+  >,
+) => {
+  const { url, key } = await getPresignedUrl.mutateAsync({
+    filename: file.name,
+  });
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": file.type,
+    },
+    body: file,
+  });
+
+  if (!res.ok) {
+    const text = await res.text(); // Get error details from response
+    console.error("S3 upload failed:", text);
+    throw new Error(`S3 upload failed: ${text}`);
+  }
+
+  await notifyUploadComplete.mutateAsync({ key });
+};
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [noteType, setNoteType] = useState("main");
+
+  const getPresignedUrl = api.audio.getPresignedUrl.useMutation();
+  const notifyUploadComplete = api.audio.notifyUploadComplete.useMutation();
 
   const router = useRouter();
   function handleDrop(e: DragEvent<HTMLDivElement>) {
@@ -46,58 +77,16 @@ export default function UploadPage() {
     }
   }
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  function startAudio() {
-    if (!audioRef.current) {
-      const audio = new Audio("/tavern.mp3");
-      audio.loop = true;
-      audio.volume = 0.25;
-
-      // Handle the promise returned by play() and catch any errors
-      audio
-        .play()
-        .then(() => {
-          audioRef.current = audio;
-        })
-        .catch((error) => {
-          console.error("Audio play error:", error);
-        });
-    }
-  }
-
-  function stopAudio() {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current = null;
-    }
-  }
-
   async function handleSubmit() {
     if (!file) return;
     setLoading(true);
-    startAudio();
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("noteType", noteType);
-
-    const res = await fetch("/api/transcribe", {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = (await res.json()) as TranscriptionResponse;
-
-    setLoading(false);
-    stopAudio();
-
-    if (res.ok) {
-      router.push(`/parsed`);
-    } else {
+    try {
+      await uploadToS3(file, getPresignedUrl, notifyUploadComplete);
+      router.push("/tbd?success=true");
+    } catch (err) {
+      console.error("Upload failed", err);
       setLoading(false);
-      console.error("Error:", result.error ?? result.details);
     }
   }
 

@@ -17,6 +17,9 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    S3_AUDIO_BUCKET: z.string(),
+    AWS_SECRET_ACCESS_KEY: z.string(),
+    AWS_ACCESS_KEY_ID: z.string(),
   },
 
   /**
@@ -38,6 +41,9 @@ export const env = createEnv({
     AUTH_DISCORD_SECRET: process.env.AUTH_DISCORD_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    S3_AUDIO_BUCKET: process.env.S3_AUDIO_BUCKET,
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

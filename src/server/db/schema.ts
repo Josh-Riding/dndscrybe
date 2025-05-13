@@ -1,5 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import { index, pgTableCreator, primaryKey } from "drizzle-orm/pg-core";
+import { index, pgTableCreator, primaryKey, uuid } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 import { pgEnum } from "drizzle-orm/pg-core";
 
@@ -137,4 +137,27 @@ export const chatMessages = createTable("chat_messages", (d) => ({
     .timestamp({ withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
+}));
+
+export const audioUpload = createTable("audio_upload", (d) => ({
+  id: d
+    .varchar({ length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: d
+    .varchar("user_id", { length: 36 })
+    .notNull()
+    .references(() => users.id),
+  key: d.text("key").notNull().unique(),
+  status: d.varchar("status", { length: 20 }).notNull(),
+  createdAt: d.timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: d.timestamp("updated_at", { withTimezone: true }).defaultNow(),
+}));
+
+export const audioUploadRelations = relations(audioUpload, ({ one }) => ({
+  user: one(users, {
+    fields: [audioUpload.userId],
+    references: [users.id],
+  }),
 }));
