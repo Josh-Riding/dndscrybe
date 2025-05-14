@@ -11,6 +11,12 @@ import { pgEnum } from "drizzle-orm/pg-core";
  */
 export const createTable = pgTableCreator((name) => `dnd-scribe_${name}`);
 export const roleEnum = pgEnum("role", ["user", "assistant"]);
+export const userTierEnum = pgEnum("user_tier", [
+  "free",
+  "paid",
+  "unlimited",
+  "admin",
+]);
 
 export const users = createTable("user", (d) => ({
   id: d
@@ -21,12 +27,25 @@ export const users = createTable("user", (d) => ({
   name: d.varchar({ length: 255 }),
   email: d.varchar({ length: 255 }).notNull(),
   emailVerified: d
-    .timestamp({
-      mode: "date",
-      withTimezone: true,
-    })
+    .timestamp({ mode: "date", withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`),
   image: d.varchar({ length: 255 }),
+
+  tier: userTierEnum("user_tier").default("free").notNull(),
+  availableMinutes: d.integer("available_minutes").default(120).notNull(),
+  availableTokens: d.integer("available_tokens").default(0).notNull(),
+}));
+
+export const usageLog = createTable("usage_log", (d) => ({
+  id: d.serial().primaryKey(),
+  userId: d
+    .varchar({ length: 255 })
+    .notNull()
+    .references(() => users.id),
+  type: d.varchar({ length: 50 }).notNull(), // "transcription" | "chat"
+  tokensUsed: d.integer().default(0),
+  minutesUsed: d.integer().default(0),
+  createdAt: d.timestamp({ withTimezone: true }).defaultNow(),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
