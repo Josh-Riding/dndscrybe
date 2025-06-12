@@ -39,7 +39,7 @@ export default async function Home() {
               <div className="mt-8 flex flex-col items-center">
                 <div className="flex -space-x-4">
                   {[
-                    "/avatars/image2.jpg",
+                    "/avatars/image2.JPG",
                     "/avatars/image1.jpg",
                     "/avatars/image3.jpg",
                     "/avatars/image4.jpg",
@@ -127,7 +127,7 @@ export default async function Home() {
                 quote:
                   "I really don't like writing down details during a session in the middle of the action. This lets me focus on the game and have more fun!",
                 name: "Josh, Game Master/Player",
-                image: "/avatars/image2.jpg",
+                image: "/avatars/image2.JPG",
               },
 
               {

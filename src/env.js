@@ -20,6 +20,8 @@ export const env = createEnv({
     S3_AUDIO_BUCKET: z.string(),
     AWS_SECRET_ACCESS_KEY: z.string(),
     AWS_ACCESS_KEY_ID: z.string(),
+    STRIPE_SECRET_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
 
   /**
@@ -29,6 +31,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string(),
   },
 
   /**
@@ -44,6 +47,10 @@ export const env = createEnv({
     S3_AUDIO_BUCKET: process.env.S3_AUDIO_BUCKET,
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

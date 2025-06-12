@@ -5,7 +5,7 @@ import { transcriptionSummary } from "@/server/db/schema";
 
 export const summaryRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(z.object({ summary: z.string().min(1), id: z.number() }))
+    .input(z.object({ summary: z.string().min(1), id: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(transcriptionSummary).values({
         id: input.id,

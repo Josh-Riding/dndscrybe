@@ -1,19 +1,17 @@
 "use client";
 
-import { siteConfig } from "@/config/site";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import type { DragEvent, ChangeEvent } from "react";
-import { noteTypeExamples } from "../lib/noteTypes";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 
-interface TranscriptionResponse {
-  text: string;
-  summary: string;
-  error?: string;
-  details?: string;
-}
+// interface TranscriptionResponse {
+//   text: string;
+//   summary: string;
+//   error?: string;
+//   details?: string;
+// }
 const uploadToS3 = async (
   file: File,
   getPresignedUrl: ReturnType<typeof api.audio.getPresignedUrl.useMutation>,
@@ -21,7 +19,7 @@ const uploadToS3 = async (
     typeof api.audio.notifyUploadComplete.useMutation
   >,
 ) => {
-  const { url, key } = await getPresignedUrl.mutateAsync({
+  const { url, key, id } = await getPresignedUrl.mutateAsync({
     filename: file.name,
   });
 
@@ -40,16 +38,18 @@ const uploadToS3 = async (
   }
 
   await notifyUploadComplete.mutateAsync({ key });
+  return id;
 };
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [noteType, setNoteType] = useState("main");
 
   const getPresignedUrl = api.audio.getPresignedUrl.useMutation();
   const notifyUploadComplete = api.audio.notifyUploadComplete.useMutation();
+  const { data: remainingCredits, isLoading: isLoadingCredits } =
+    api.user.getRemainingCredits.useQuery();
 
   const router = useRouter();
   function handleDrop(e: DragEvent<HTMLDivElement>) {
@@ -82,8 +82,8 @@ export default function UploadPage() {
     setLoading(true);
 
     try {
-      await uploadToS3(file, getPresignedUrl, notifyUploadComplete);
-      router.push("/tbd?success=true");
+      const id = await uploadToS3(file, getPresignedUrl, notifyUploadComplete);
+      router.push(`/upload-status/${id}`);
     } catch (err) {
       console.error("Upload failed", err);
       setLoading(false);
@@ -105,6 +105,14 @@ export default function UploadPage() {
       <h1 className="mb-8 text-center font-serif text-4xl font-bold text-[#df2935] drop-shadow-md">
         Upload Your Session
       </h1>
+      {!isLoadingCredits && remainingCredits !== undefined && (
+        <div className="mx-auto mb-4 flex items-center gap-3 rounded-md bg-[#2d2d2d] px-4 py-2 text-sm text-blue-200 shadow-sm">
+          <span className="font-medium text-blue-100">Credits Remaining:</span>
+          <span className="font-semibold text-blue-300">
+            {remainingCredits.creditsRemaining}
+          </span>
+        </div>
+      )}
 
       <div
         onDrop={handleDrop}
@@ -132,21 +140,6 @@ export default function UploadPage() {
         >
           or click to select a file
         </label>
-      </div>
-
-      <select
-        value={noteType}
-        onChange={(e) => setNoteType(e.target.value)}
-        className="mt-6 w-full max-w-md rounded-2xl border border-[#3a3a3a] bg-[#2a2a2a] p-3 text-[#f5f5f5] focus:border-[#df2935] focus:ring-1 focus:ring-[#df2935] focus:outline-none"
-      >
-        <option value="main">{siteConfig.name} Style</option>
-        <option value="bulletJournal">Bullet Journal</option>
-        <option value="narrative">Narrative</option>
-      </select>
-
-      <div className="mt-4 w-full max-w-md rounded-2xl bg-[#2a2a2a] p-4 text-sm text-[#cccccc] shadow-inner">
-        <p className="mb-2 font-semibold text-[#f5f5f5]">Example Preview:</p>
-        <pre className="whitespace-pre-wrap">{noteTypeExamples[noteType]}</pre>
       </div>
 
       <button

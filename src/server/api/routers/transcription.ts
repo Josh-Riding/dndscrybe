@@ -7,7 +7,11 @@ import { eq, and, asc } from "drizzle-orm";
 export const transcriptionRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
-      z.object({ transcription: z.string().min(1), title: z.string().min(1) }),
+      z.object({
+        transcription: z.string().min(1),
+        title: z.string().min(1),
+        id: z.string().min(1),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const [inserted] = await ctx.db
@@ -16,8 +20,9 @@ export const transcriptionRouter = createTRPCRouter({
           title: input.title,
           transcriptionText: input.transcription,
           createdById: ctx.session.user.id,
+          id: input.id,
         })
-        .returning({ id: transcriptions.id });
+        .returning();
 
       return inserted;
     }),
@@ -25,7 +30,7 @@ export const transcriptionRouter = createTRPCRouter({
   edit: protectedProcedure
     .input(
       z.object({
-        id: z.number(),
+        id: z.string(),
         title: z.string().min(1),
       }),
     )
@@ -45,7 +50,7 @@ export const transcriptionRouter = createTRPCRouter({
     }),
 
   getMessagesByTranscriptionId: protectedProcedure
-    .input(z.object({ transcriptionId: z.number() }))
+    .input(z.object({ transcriptionId: z.string() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db
         .select({

@@ -33,7 +33,8 @@ export const audioRouter = createTRPCRouter({
     .input(z.object({ filename: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
-      const key = `audio/${userId}/${Date.now()}-${nanoid()}-${input.filename}`;
+      const rawKey = `audio/${userId}/${Date.now()}-${nanoid()}-${input.filename}`;
+      const key = encodeURIComponent(rawKey);
 
       const extension = input.filename.split(".").pop()?.toLowerCase();
       const contentType =
@@ -47,13 +48,18 @@ export const audioRouter = createTRPCRouter({
 
       const url = await getSignedUrl(s3Client, command, { expiresIn: 60 });
 
-      await ctx.db.insert(audioUpload).values({
-        key,
-        userId,
-        status: "pending",
-      });
+      const inserted = await ctx.db
+        .insert(audioUpload)
+        .values({ key, userId, filename: input.filename })
+        .returning({ id: audioUpload.id });
 
-      return { url, key };
+      if (!inserted[0]) {
+        throw new Error("Insert failed: no ID returned");
+      }
+
+      const id = inserted[0].id;
+
+      return { url, key, id };
     }),
 
   notifyUploadComplete: protectedProcedure
@@ -72,9 +78,32 @@ export const audioRouter = createTRPCRouter({
       //custom stuff here for minutes
       await ctx.db
         .update(audioUpload)
-        .set({ status: "uploaded" })
+        .set({ uploaded: true })
         .where(eq(audioUpload.id, upload.id));
 
       return { success: true };
+    }),
+
+  getStatus: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const upload = await ctx.db.query.audioUpload.findFirst({
+        where: and(
+          eq(audioUpload.id, input.id),
+          eq(audioUpload.userId, ctx.session.user.id),
+        ),
+      });
+
+      if (!upload) {
+        throw new Error("Not found");
+      }
+
+      return {
+        uploaded: upload.uploaded,
+        processed: upload.processed,
+        key: upload.key,
+        duration: upload.duration,
+        filename: upload.filename,
+      };
     }),
 });

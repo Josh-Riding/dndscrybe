@@ -11,10 +11,18 @@ export default function Footer() {
         <a href="/terms_of_service" className="hover:text-[#df2935]">
           Terms of Service
         </a>
-        <a href="#" className="hover:text-[#df2935]">
+        <a href="/purchase-credits" className="hover:text-[#df2935]">
+          Pricing
+        </a>
+        <a
+          href="https://github.com/Josh-Riding/dndscrybe"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-[#df2935]"
+        >
           GitHub
         </a>
-        <a href="#" className="hover:text-[#df2935]">
+        <a href="/contact" className="hover:text-[#df2935]">
           Contact
         </a>
       </div>

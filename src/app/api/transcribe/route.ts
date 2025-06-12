@@ -7,6 +7,8 @@ import { createClient } from "@deepgram/sdk";
 import { api } from "@/trpc/server";
 import { noteTypes } from "@/app/lib/noteTypes";
 import { openai } from "@/app/lib/openai";
+import { pullFileFromS3 } from "@/app/lib/s3ops";
+import { fileTypeFromBuffer } from "file-type";
 
 type DeepgramTranscriptionResult = {
   results?: {
@@ -42,16 +44,44 @@ function formatTranscriptWithSpeakers(
 }
 
 export async function POST(req: Request) {
-  const data = await req.formData();
-  const file = data.get("file") as File;
-  const userChoice = data.get("noteType") as keyof typeof noteTypes;
+  const data = await req.json();
+  const { id } = data;
 
-  if (!file || file.type.split("/")[0] !== "audio") {
+  //find and stream to deepgram
+  const fileStatus = await api.audio.getStatus({ id });
+  const userCredits = await api.user.getRemainingCredits();
+
+  if (!fileStatus.uploaded || !fileStatus.processed) {
+    return NextResponse.json(
+      {
+        error: "Processing failed",
+        details: "The file hasn't finished being processed into s3",
+      },
+      { status: 500 },
+    );
+  }
+
+  const durationInMinutes = Math.floor((fileStatus.duration ?? 0) / 60);
+
+  if (userCredits.creditsRemaining < durationInMinutes) {
+    return NextResponse.json(
+      {
+        error: "Processing failed",
+        details: "User doesn't have enough credits",
+      },
+      { status: 500 },
+    );
+  }
+
+  const buffer = await pullFileFromS3(fileStatus.key);
+  const fileType = await fileTypeFromBuffer(buffer);
+
+  if (!fileType || !fileType.mime.startsWith("audio/")) {
     return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filePath = path.join(tmpdir(), `${Date.now()}-${file.name}`);
+  const fileName = fileStatus.filename;
+  const filePath = path.join(tmpdir(), `${Date.now()}-${fileName}`);
   await writeFile(filePath, buffer);
 
   const stream = fs.createReadStream(filePath);
@@ -71,17 +101,16 @@ export async function POST(req: Request) {
     if (error) throw error;
 
     const transcriptionText = formatTranscriptWithSpeakers(result);
-
+    console.log("i got here");
     const created = await api.transcribe.create({
       transcription: transcriptionText,
-      title: file.name,
+      title: fileName,
+      id,
     });
-
+    console.log("i got here again");
     if (!created) {
       throw new Error("Failed to create transcription");
     }
-
-    const transcriptionId = created.id;
 
     const summaryRes = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -97,7 +126,7 @@ Use this exact format and tone as how to structure the summary:
 
 ---
 
-${noteTypes[userChoice]}
+${noteTypes.main}
 
 ---
 Be concise, avoid restating everything, and focus only on what players will want to remember later.
@@ -112,7 +141,10 @@ Be concise, avoid restating everything, and focus only on what players will want
 
     const summary = summaryRes.choices[0]?.message.content ?? "";
 
-    await api.summarize.create({ id: transcriptionId, summary: summary });
+    await api.summarize.create({ id, summary: summary });
+
+    //take away the credits boys
+    await api.user.removeCredits({ amount: durationInMinutes });
 
     return NextResponse.json({
       text: transcriptionText,

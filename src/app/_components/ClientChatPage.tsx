@@ -8,7 +8,7 @@ export default function ClientChatPage({
   transcriptions,
 }: {
   transcriptions: {
-    id: number;
+    id: string;
     createdById: string;
     createdAt: Date;
     title: string | null;
@@ -24,7 +24,7 @@ export default function ClientChatPage({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const messagesQuery = api.transcribe.getMessagesByTranscriptionId.useQuery(
-    { transcriptionId: Number(selectedId) },
+    { transcriptionId: String(selectedId) },
     {
       enabled: !!selectedId,
       refetchOnWindowFocus: false,
@@ -61,7 +61,7 @@ export default function ClientChatPage({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          transcriptionId: Number(selectedId),
+          transcriptionId: String(selectedId),
           userInput: input,
         }),
       });

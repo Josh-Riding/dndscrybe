@@ -32,8 +32,7 @@ export const users = createTable("user", (d) => ({
   image: d.varchar({ length: 255 }),
 
   tier: userTierEnum("user_tier").default("free").notNull(),
-  availableMinutes: d.integer("available_minutes").default(120).notNull(),
-  availableTokens: d.integer("available_tokens").default(0).notNull(),
+  availableCredits: d.integer("available_credits").default(120).notNull(),
 }));
 
 export const usageLog = createTable("usage_log", (d) => ({
@@ -108,7 +107,7 @@ export const verificationTokens = createTable(
 );
 
 export const transcriptions = createTable("transcriptions", (d) => ({
-  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  id: d.varchar({ length: 255 }).primaryKey(),
   title: d.varchar({ length: 256 }),
   transcriptionText: d.text(),
   createdById: d
@@ -124,7 +123,7 @@ export const transcriptions = createTable("transcriptions", (d) => ({
 export const transcriptionSummary = createTable(
   "transcription_summaries",
   (d) => ({
-    id: d.integer().primaryKey(),
+    id: d.text().primaryKey(),
     summaryText: d.text(),
     createdById: d
       .varchar({ length: 255 })
@@ -147,7 +146,7 @@ export const transcriptionsRelations = relations(transcriptions, ({ one }) => ({
 export const chatMessages = createTable("chat_messages", (d) => ({
   id: d.serial().primaryKey(),
   sessionId: d
-    .integer()
+    .text()
     .notNull()
     .references(() => transcriptions.id, { onDelete: "cascade" }),
   role: roleEnum("role").notNull(),
@@ -169,7 +168,10 @@ export const audioUpload = createTable("audio_upload", (d) => ({
     .notNull()
     .references(() => users.id),
   key: d.text("key").notNull().unique(),
-  status: d.varchar("status", { length: 20 }).notNull(),
+  filename: d.text("filename").notNull(),
+  processed: d.boolean("processed").default(false).notNull(),
+  uploaded: d.boolean("uploaded").default(false).notNull(),
+  duration: d.integer("duration"),
   createdAt: d.timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: d.timestamp("updated_at", { withTimezone: true }).defaultNow(),
 }));
@@ -180,3 +182,11 @@ export const audioUploadRelations = relations(audioUpload, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const processedStripeEvents = createTable(
+  "processed_stripe_events",
+  (d) => ({
+    id: d.text("id").primaryKey(),
+    processedAt: d.timestamp("processed_at").defaultNow(),
+  }),
+);

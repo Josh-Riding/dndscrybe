@@ -8,7 +8,7 @@ import type { ChatCompletionMessageParam } from "openai/resources/chat/completio
 
 export async function POST(req: NextRequest) {
   const { transcriptionId, userInput } = (await req.json()) as {
-    transcriptionId: number;
+    transcriptionId: string;
     userInput: string;
   };
 
