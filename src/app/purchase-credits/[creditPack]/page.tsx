@@ -1,15 +1,21 @@
 import Checkout from "@/app/_components/checkout";
 
+const validPacks = [
+  "guild-pack",
+  "adventure-pack",
+  "dragons-hoard",
+] as readonly string[];
+
 interface PageProps {
-  params: {
-    creditPack: string; // Keep this as string, but validate in runtime below
-  };
+  params: Promise<{
+    creditPack: string;
+  }>;
 }
 
-const validPacks = ["guild-pack", "adventure-pack", "dragons-hoard"] as const;
+export default async function Page({ params }: PageProps) {
+  const { creditPack } = await params;
 
-export default function Page({ params }: PageProps) {
-  if (!validPacks.includes(params.creditPack as any)) {
+  if (!validPacks.includes(creditPack)) {
     throw new Error("Invalid credit pack");
   }
 
@@ -17,7 +23,9 @@ export default function Page({ params }: PageProps) {
     <div className="flex justify-center px-4 pt-10 pb-20">
       <div className="w-full max-w-2xl">
         <Checkout
-          creditPackage={params.creditPack as (typeof validPacks)[number]}
+          creditPackage={
+            creditPack as "guild-pack" | "adventure-pack" | "dragons-hoard"
+          }
         />
       </div>
     </div>
