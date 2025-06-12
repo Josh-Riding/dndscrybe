@@ -6,7 +6,7 @@ type PageProps = {
   };
 };
 
-export default async function Page({ params }: PageProps) {
+export default function Page({ params }: PageProps) {
   return (
     <div className="flex justify-center px-4 pt-10 pb-20">
       <div className="w-full max-w-2xl">
