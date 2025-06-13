@@ -33,9 +33,10 @@ export async function fetchClientSecret(
 
   const authSession = await auth();
 
-  if (!authSession || !authSession.user?.id) {
+  if (!authSession?.user?.id) {
     throw new Error("User session not found");
   }
+
   // Create Checkout Sessions from body params.
   const session = await stripe.checkout.sessions.create({
     ui_mode: "embedded",

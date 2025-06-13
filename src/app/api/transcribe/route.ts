@@ -44,8 +44,20 @@ function formatTranscriptWithSpeakers(
 }
 
 export async function POST(req: Request) {
-  const data = await req.json();
-  const { id } = data;
+  const body = await req.json();
+
+  if (
+    typeof body !== "object" ||
+    body === null ||
+    typeof body.id !== "string"
+  ) {
+    return NextResponse.json(
+      { error: "Invalid request body" },
+      { status: 400 },
+    );
+  }
+
+  const { id } = body;
 
   //find and stream to deepgram
   const fileStatus = await api.audio.getStatus({ id });
@@ -76,7 +88,7 @@ export async function POST(req: Request) {
   const buffer = await pullFileFromS3(fileStatus.key);
   const fileType = await fileTypeFromBuffer(buffer);
 
-  if (!fileType || !fileType.mime.startsWith("audio/")) {
+  if (!fileType?.mime.startsWith("audio/")) {
     return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
   }
 
