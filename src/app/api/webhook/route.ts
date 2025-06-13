@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ received: true, duplicate: true });
   }
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
+    const session = event.data.object;
     const paymentIntentId = session.payment_intent;
 
     if (!paymentIntentId) {
@@ -48,9 +48,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const paymentIntent = await stripe.paymentIntents.retrieve(
-      paymentIntentId.toString(),
-    );
+    if (typeof paymentIntentId !== "string") {
+      return NextResponse.json(
+        { error: "Invalid or missing payment intent ID" },
+        { status: 400 },
+      );
+    }
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
     const meta = paymentIntent.metadata;
 
     if (!meta?.userId || !meta?.credits) {

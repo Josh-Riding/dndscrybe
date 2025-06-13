@@ -17,7 +17,7 @@ export default function UploadStatusPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    fetch("/api/process-audio", {
+    void fetch("/api/process-audio", {
       method: "POST",
     });
   }, []);

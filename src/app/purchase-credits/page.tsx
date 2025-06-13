@@ -11,17 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { CheckIcon, MinusIcon } from "lucide-react";
+import { CheckIcon } from "lucide-react";
 import React from "react";
 
 const packs = {
@@ -101,7 +91,7 @@ export default function PricingSectionCards() {
                 variant={"outline"}
                 onClick={handleClick}
               >
-                Let's go!
+                Let&apos;s go!
               </Button>
             </CardFooter>
           </Card>
@@ -183,7 +173,7 @@ export default function PricingSectionCards() {
               >
                 50% Bulk Discount
               </Badge>
-              <CardTitle className="mb-7">Dragon's Hoard</CardTitle>
+              <CardTitle className="mb-7">Dragon&apos;s Hoard</CardTitle>
               <span className="text-5xl font-bold">$20</span>
             </CardHeader>
             <CardDescription className="mx-auto w-11/12 text-center">

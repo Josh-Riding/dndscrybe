@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { siteConfig } from "@/config/site";
 
 export default function Footer() {
@@ -5,15 +6,15 @@ export default function Footer() {
     <footer className="border-t border-[#3a3a3a] bg-[#1e1e1e] py-8 text-center text-sm text-[#888]">
       <p>© 2025 {siteConfig.name}. All rights reserved.</p>
       <div className="mt-2 space-x-4">
-        <a href="/privacy" className="hover:text-[#df2935]">
+        <Link href="/privacy" className="hover:text-[#df2935]">
           Privacy
-        </a>
-        <a href="/terms_of_service" className="hover:text-[#df2935]">
+        </Link>
+        <Link href="/terms_of_service" className="hover:text-[#df2935]">
           Terms of Service
-        </a>
-        <a href="/purchase-credits" className="hover:text-[#df2935]">
+        </Link>
+        <Link href="/purchase-credits" className="hover:text-[#df2935]">
           Pricing
-        </a>
+        </Link>
         <a
           href="https://github.com/Josh-Riding/dndscrybe"
           target="_blank"
@@ -22,9 +23,9 @@ export default function Footer() {
         >
           GitHub
         </a>
-        <a href="/contact" className="hover:text-[#df2935]">
+        <Link href="/contact" className="hover:text-[#df2935]">
           Contact
-        </a>
+        </Link>
       </div>
     </footer>
   );

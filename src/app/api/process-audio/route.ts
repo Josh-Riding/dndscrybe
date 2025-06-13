@@ -14,7 +14,7 @@ const s3 = new S3Client({
   },
 });
 
-export async function POST(req: Request) {
+export async function POST(_req: Request) {
   const unprocessed = await db
     .select()
     .from(audioUpload)

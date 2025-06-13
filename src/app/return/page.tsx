@@ -4,7 +4,7 @@ import { stripe } from "../lib/stripe";
 export default async function Return({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const resolvedSearchParams = await searchParams;
   const session_id = resolvedSearchParams.session_id;
