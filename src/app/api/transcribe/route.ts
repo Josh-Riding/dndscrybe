@@ -44,20 +44,8 @@ function formatTranscriptWithSpeakers(
 }
 
 export async function POST(req: Request) {
-  const body = await req.json();
-
-  if (
-    typeof body !== "object" ||
-    body === null ||
-    typeof body.id !== "string"
-  ) {
-    return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400 },
-    );
-  }
-
-  const { id } = body;
+  const data = (await req.json()) as { id: string };
+  const { id } = data;
 
   //find and stream to deepgram
   const fileStatus = await api.audio.getStatus({ id });
