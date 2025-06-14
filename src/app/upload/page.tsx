@@ -129,7 +129,7 @@ export default function UploadPage() {
         </p>
         <input
           type="file"
-          accept="audio/*"
+          accept=".m4a,audio/*"
           onChange={handleFileChange}
           className="hidden"
           id="fileInput"
