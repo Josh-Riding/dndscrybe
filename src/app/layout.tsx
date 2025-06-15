@@ -27,6 +27,13 @@ export default function RootLayout({
     <SessionProvider>
       {" "}
       <html lang="en" className={`${geist.variable}`}>
+        <head>
+          <script
+            data-goatcounter="https://01042020.goatcounter.com/count"
+            async
+            src="//gc.zgo.at/count.js"
+          ></script>
+        </head>
         <body>
           <Navbar></Navbar>
           <TRPCReactProvider>{children}</TRPCReactProvider>
