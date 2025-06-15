@@ -8,6 +8,8 @@ import { SessionProvider } from "next-auth/react";
 import Navbar from "./_components/Navbar";
 import { siteConfig } from "@/config/site";
 import Footer from "./_components/Footer";
+import Script from "next/script";
+import { GoatCounterPageView } from "./_components/GoatCounterPageView";
 
 export const metadata: Metadata = {
   title: siteConfig.name,
@@ -27,14 +29,13 @@ export default function RootLayout({
     <SessionProvider>
       {" "}
       <html lang="en" className={`${geist.variable}`}>
-        <head>
-          <script
-            data-goatcounter="https://01042020.goatcounter.com/count"
-            async
-            src="//gc.zgo.at/count.js"
-          ></script>
-        </head>
         <body>
+          <Script
+            data-goatcounter="https://01042020.goatcounter.com/count"
+            src="https://gc.zgo.at/count.js"
+            strategy="afterInteractive"
+          />
+          <GoatCounterPageView />
           <Navbar></Navbar>
           <TRPCReactProvider>{children}</TRPCReactProvider>
           <Footer></Footer>
