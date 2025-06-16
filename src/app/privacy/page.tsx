@@ -77,8 +77,22 @@ export default function PrivacyPolicy() {
           </h2>
           <p className="leading-relaxed text-[#cccccc]">
             We use secure cloud providers (like AWS) to store your files. All
-            data is encrypted at rest and in transit. We don’t work with any
-            third-party advertisers or trackers.
+            data is encrypted at rest and in transit.
+          </p>
+          <p className="leading-relaxed text-[#cccccc]">
+            We don’t work with any third-party advertisers, and we avoid
+            invasive tracking. However, we use privacy-first tools like
+            GoatCounter to understand site usage and improve the experience —
+            without tracking individuals or using cookies.
+          </p>
+
+          <p className="leading-relaxed text-[#cccccc]">
+            To provide transcription, summarization, and AI-powered conversation
+            features, we send your audio, text, and related data to third-party
+            AI providers, including Deepgram and OpenAI. These providers process
+            your content solely to deliver the services, and we do not control
+            their data policies. Please review their privacy practices for more
+            details.
           </p>
         </section>
 

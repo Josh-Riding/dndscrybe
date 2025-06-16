@@ -9,7 +9,7 @@ export default function Footer() {
         <Link href="/privacy" className="hover:text-[#df2935]">
           Privacy
         </Link>
-        <Link href="/terms_of_service" className="hover:text-[#df2935]">
+        <Link href="/terms" className="hover:text-[#df2935]">
           Terms of Service
         </Link>
         <Link href="/purchase-credits" className="hover:text-[#df2935]">

@@ -1,16 +1,28 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import * as React from "react";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { siteConfig } from "@/config/site";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { SignInWithConsent } from "./SignInWithConsent";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const menuRef = React.useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
+  const [mounted, setMounted] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -28,69 +40,105 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  const authLink = session
-    ? { label: "Logout", action: () => signOut() }
-    : { label: "Login", action: () => signIn() };
+  if (!mounted) {
+    return (
+      <nav className="z-50 flex items-center justify-between bg-black px-6 py-4 shadow-sm">
+        <Link href="/">
+          <span className="cursor-pointer font-serif text-2xl font-bold text-red-600 drop-shadow-md">
+            {siteConfig.name}
+          </span>
+        </Link>
+      </nav>
+    );
+  }
 
   return (
-    <nav className="z-50 flex items-center justify-between bg-[#1e1e1e] px-6 py-4 shadow-md">
+    <nav className="z-50 flex items-center justify-between bg-black px-6 py-4 shadow-sm">
       <Link href="/">
-        <span className="cursor-pointer font-serif text-2xl font-bold text-[#df2935] drop-shadow-md">
+        <span className="cursor-pointer font-serif text-2xl font-bold text-red-600 drop-shadow-md">
           {siteConfig.name}
         </span>
       </Link>
 
-      <div className="hidden space-x-6 text-sm font-medium text-[#f5f5f5] md:flex">
-        {siteConfig.navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="transition-colors hover:text-[#df2935]"
-          >
-            {link.label}
-          </Link>
-        ))}
-        <button
-          onClick={authLink.action}
-          className="transition-colors hover:text-[#df2935]"
-        >
-          {authLink.label}
-        </button>
+      <div className="hidden md:flex">
+        <NavigationMenu>
+          <NavigationMenuList className="space-x-3">
+            {session &&
+              siteConfig.navLinks.map((link) => (
+                <NavigationMenuItem key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={navigationMenuTriggerStyle({
+                      className:
+                        "rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-gray-200 transition-colors hover:bg-red-700 hover:text-red-100",
+                    })}
+                  >
+                    {link.label}
+                  </Link>
+                </NavigationMenuItem>
+              ))}
+
+            <NavigationMenuItem>
+              {session ? (
+                <button
+                  onClick={() => signOut()}
+                  className={navigationMenuTriggerStyle({
+                    className:
+                      "rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-gray-200 transition-colors hover:bg-red-700 hover:text-red-100",
+                  })}
+                >
+                  Logout
+                </button>
+              ) : (
+                <SignInWithConsent />
+              )}
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       </div>
 
       <div className="flex items-center md:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-[#f5f5f5] focus:outline-none"
+          className="text-gray-100 focus:outline-none"
+          aria-label="Toggle menu"
         >
-          {isOpen ? "✖" : "☰"}
+          {isOpen ? "" : "☰"}
         </button>
       </div>
 
       {isOpen && (
         <div
           ref={menuRef}
-          className="absolute top-16 left-0 z-50 flex w-full flex-col items-center space-y-4 bg-[#1e1e1e] py-6 shadow-md md:hidden"
+          className="absolute top-16 left-0 z-50 flex w-full flex-col items-center space-y-3 bg-black py-6 shadow-md md:hidden"
         >
-          {siteConfig.navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setIsOpen(false)}
-              className="text-lg text-[#f5f5f5] transition-colors hover:text-[#df2935]"
+          {session &&
+            siteConfig.navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className="w-4/5 rounded-md bg-gray-800 px-4 py-2 text-center text-sm font-medium text-gray-100 transition-colors hover:bg-gray-700"
+              >
+                {link.label}
+              </Link>
+            ))}
+
+          {session ? (
+            <button
+              onClick={() => {
+                void signOut();
+                setIsOpen(false);
+              }}
+              className="w-4/5 rounded-md bg-gray-800 px-4 py-2 text-center text-sm font-medium text-gray-100 transition-colors hover:bg-gray-700"
             >
-              {link.label}
-            </Link>
-          ))}
-          <button
-            onClick={() => {
-              void authLink.action(); //Error: Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator.
-              setIsOpen(false);
-            }}
-            className="text-lg text-[#f5f5f5] transition-colors hover:text-[#df2935]"
-          >
-            {authLink.label}
-          </button>
+              Logout
+            </button>
+          ) : (
+            <div className="w-4/5">
+              <SignInWithConsent />
+            </div>
+          )}
         </div>
       )}
     </nav>

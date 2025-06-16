@@ -13,7 +13,9 @@ export default function TermsOfServicePage() {
       <Section title="1. Use of the Service">
         You may use the Service only in compliance with these Terms and all
         applicable local, state, national, and international laws, rules, and
-        regulations. You must be at least 13 years old to use the Service.
+        regulations. You must be at least 13 years old to use the Service. We do
+        not knowingly collect data from anyone under 13. If you are under 13, do
+        not use or access this Service.
       </Section>
 
       <Section title="2. User Content">
@@ -34,7 +36,17 @@ export default function TermsOfServicePage() {
         We reserve the right to remove content that violates these Terms.
       </Section>
 
-      <Section title="3. Acceptable Use">
+      <Section title="3. Use of Third-Party AI Services">
+        The Service uses third-party AI providers such as Deepgram and OpenAI to
+        process your audio files, transcriptions, summaries, and interactions.
+        By using the Service, you consent to the transmission of your content to
+        these providers for transcription, summarization, and AI-powered
+        conversations. We do not control the data handling practices of these
+        third parties; please review their respective privacy policies for more
+        information.
+      </Section>
+
+      <Section title="4. Acceptable Use">
         You agree not to:
         <ul className="mt-2 list-inside list-disc">
           <li>
@@ -52,52 +64,52 @@ export default function TermsOfServicePage() {
         </ul>
       </Section>
 
-      <Section title="4. Accounts">
+      <Section title="5. Accounts">
         If the Service offers account creation, you are responsible for
         maintaining the confidentiality of your login credentials and for all
         activity under your account. We reserve the right to suspend or
         terminate your account if you violate these Terms.
       </Section>
 
-      <Section title="5. Service Availability & Modifications">
+      <Section title="6. Service Availability & Modifications">
         We reserve the right to modify or discontinue the Service at any time
         without notice. While we aim for high availability, we do not guarantee
         uninterrupted access or error-free performance.
       </Section>
 
-      <Section title="6. Disclaimers">
+      <Section title="7. Disclaimers">
         The Service is provided &quot;as is&quot; and &quot;as available&quot;
         without warranties of any kind. We do not guarantee the accuracy,
         reliability, or completeness of any transcription, summary, or content
         produced by the Service. You use the Service at your own risk.
       </Section>
 
-      <Section title="7. Limitation of Liability">
+      <Section title="8. Limitation of Liability">
         To the maximum extent permitted by law, we are not liable for any
         indirect, incidental, special, consequential, or punitive damages
         arising out of your access to or use of the Service.
       </Section>
 
-      <Section title="8. Termination">
+      <Section title="9. Termination">
         We may suspend or terminate your access to the Service at any time, for
         any reason, including violation of these Terms. Upon termination, all
         rights granted to you will cease.
       </Section>
 
-      <Section title="9. Governing Law">
+      <Section title="10. Governing Law">
         These Terms shall be governed by and construed in accordance with the
         laws of the State of {siteConfig.legalState}, without regard to its
         conflict of law provisions.
       </Section>
 
-      <Section title="10. Changes to These Terms">
+      <Section title="11. Changes to These Terms">
         We may update these Terms from time to time. We will notify you of
         material changes by posting the revised version on our website with an
         updated effective date. Continued use of the Service after such changes
         constitutes acceptance of the updated Terms.
       </Section>
 
-      <Section title="11. Contact Us">
+      <Section title="12. Contact Us">
         If you have questions about these Terms, please contact us at:
         <br />
         <a href={`mailto:${siteConfig.contactEmail}`} className="underline">
