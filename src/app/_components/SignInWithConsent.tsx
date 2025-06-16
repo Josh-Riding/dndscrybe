@@ -18,7 +18,7 @@ export function SignInWithConsent() {
     localStorage.setItem("ageConsentConfirmed", "true");
     setHasConsent(true);
     setShowConsent(false);
-    signIn("discord");
+    void signIn("discord");
   };
 
   if (showConsent && !hasConsent) {
@@ -29,7 +29,7 @@ export function SignInWithConsent() {
     <Button
       onClick={() => {
         if (hasConsent) {
-          signIn("discord");
+          void signIn("discord");
         } else {
           setShowConsent(true);
         }
