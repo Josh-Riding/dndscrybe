@@ -10,7 +10,6 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { SignInWithConsent } from "./SignInWithConsent";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {

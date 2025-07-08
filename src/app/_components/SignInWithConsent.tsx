@@ -14,7 +14,7 @@ export function SignInWithConsent() {
     "discord" | "google" | null
   >(null);
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/upload";
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/upload";
 
   const handleSignIn = (provider: "google" | "discord") => {
     void signIn(provider, { callbackUrl });
@@ -26,7 +26,7 @@ export function SignInWithConsent() {
       setHasConsent(true);
       void signIn(selectedProvider, { callbackUrl });
     }
-  }, [selectedProvider]);
+  }, [selectedProvider, callbackUrl]);
 
   const handleConsentConfirmed = () => {
     localStorage.setItem("ageConsentConfirmed", "true");

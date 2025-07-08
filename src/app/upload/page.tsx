@@ -6,6 +6,7 @@ import type { DragEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import { Coins, Loader2 } from "lucide-react";
+import Link from "next/link";
 
 // interface TranscriptionResponse {
 //   text: string;
@@ -124,13 +125,13 @@ export default function UploadPage() {
           </div>
 
           {remainingCredits.creditsRemaining < 240 && (
-            <a
+            <Link
               href="/purchase-credits"
               className="mb-4 flex animate-bounce items-center justify-center gap-2 text-sm font-medium text-[#df2935] underline hover:text-[#b2222b]"
             >
               <Coins className="h-4 w-4 text-[#df2935]" />
               Purchase more credits
-            </a>
+            </Link>
           )}
         </>
       )}
