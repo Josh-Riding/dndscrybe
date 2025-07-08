@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@/trpc/react";
+import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -166,7 +167,11 @@ export default function UploadStatusPage() {
                 : "bg-green-500 hover:bg-green-400"
             }`}
           >
-            {isProcessing ? "Processing..." : "Use My Credits and Continue"}
+            {isProcessing ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              "Use My Credits and Continue"
+            )}
           </button>
         )}
     </div>

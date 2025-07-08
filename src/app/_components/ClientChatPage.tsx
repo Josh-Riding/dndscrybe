@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { api } from "@/trpc/react";
 import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function ClientChatPage({
   transcriptions,
@@ -185,7 +186,11 @@ export default function ClientChatPage({
                     : "bg-[#df2935] hover:bg-[#b2222b]"
                 }`}
               >
-                {loading ? "Thinking..." : "Send"}
+                {loading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  "Send"
+                )}
               </button>
             </div>
           </form>

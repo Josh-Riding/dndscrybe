@@ -1,10 +1,11 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { DragEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
+import { Coins, Loader2 } from "lucide-react";
 
 // interface TranscriptionResponse {
 //   text: string;
@@ -42,16 +43,25 @@ const uploadToS3 = async (
 };
 
 export default function UploadPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (status !== "loading" && !session) {
+      router.replace("/"); // Redirect to home if not authenticated
+    }
+  }, [session, status, router]);
+
   const getPresignedUrl = api.audio.getPresignedUrl.useMutation();
   const notifyUploadComplete = api.audio.notifyUploadComplete.useMutation();
   const { data: remainingCredits, isLoading: isLoadingCredits } =
-    api.user.getRemainingCredits.useQuery();
+    api.user.getRemainingCredits.useQuery(undefined, {
+      enabled: !!session,
+    });
 
-  const router = useRouter();
   function handleDrop(e: DragEvent<HTMLDivElement>) {
     e.preventDefault();
     setDragActive(false);
@@ -89,13 +99,10 @@ export default function UploadPage() {
       setLoading(false);
     }
   }
-
-  const { data: session } = useSession();
-
-  if (!session) {
+  if (status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] text-[#f5f5f5]">
-        <p>Not authenticated</p>
+        <p>Checking authentication...</p>
       </div>
     );
   }
@@ -106,12 +113,26 @@ export default function UploadPage() {
         Upload Your Session
       </h1>
       {!isLoadingCredits && remainingCredits !== undefined && (
-        <div className="mx-auto mb-4 flex items-center gap-3 rounded-md bg-[#2d2d2d] px-4 py-2 text-sm text-blue-200 shadow-sm">
-          <span className="font-medium text-blue-100">Credits Remaining:</span>
-          <span className="font-semibold text-blue-300">
-            {remainingCredits.creditsRemaining}
-          </span>
-        </div>
+        <>
+          <div className="mx-auto mb-2 flex items-center gap-3 rounded-md bg-[#2d2d2d] px-4 py-2 text-sm text-blue-200 shadow-sm">
+            <span className="font-medium text-blue-100">
+              Credits Remaining:
+            </span>
+            <span className="font-semibold text-blue-300">
+              {remainingCredits.creditsRemaining}
+            </span>
+          </div>
+
+          {remainingCredits.creditsRemaining < 240 && (
+            <a
+              href="/purchase-credits"
+              className="mb-4 flex animate-bounce items-center justify-center gap-2 text-sm font-medium text-[#df2935] underline hover:text-[#b2222b]"
+            >
+              <Coins className="h-4 w-4 text-[#df2935]" />
+              Purchase more credits
+            </a>
+          )}
+        </>
       )}
 
       <div
@@ -147,7 +168,11 @@ export default function UploadPage() {
         disabled={loading}
         className="mt-8 rounded-2xl bg-[#df2935] px-6 py-3 text-lg text-white shadow-lg transition hover:bg-[#b2222b] disabled:opacity-50"
       >
-        {loading ? "Uploading..." : "Begin Transcription"}
+        {loading ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          "Begin Transcription"
+        )}
       </button>
     </div>
   );

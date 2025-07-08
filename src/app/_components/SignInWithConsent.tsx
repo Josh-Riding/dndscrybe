@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { AgeConsent } from "./AgeConsent";
 import { Button } from "@/components/ui/button";
 import { FaDiscord, FaGoogle } from "react-icons/fa";
+import { useSearchParams } from "next/navigation";
 
 export function SignInWithConsent() {
   const [showConsent, setShowConsent] = useState(false);
@@ -12,12 +13,18 @@ export function SignInWithConsent() {
   const [selectedProvider, setSelectedProvider] = useState<
     "discord" | "google" | null
   >(null);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/upload";
+
+  const handleSignIn = (provider: "google" | "discord") => {
+    void signIn(provider, { callbackUrl });
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem("ageConsentConfirmed");
     if (stored === "true" && selectedProvider) {
       setHasConsent(true);
-      void signIn(selectedProvider);
+      void signIn(selectedProvider, { callbackUrl });
     }
   }, [selectedProvider]);
 
@@ -25,7 +32,7 @@ export function SignInWithConsent() {
     localStorage.setItem("ageConsentConfirmed", "true");
     setHasConsent(true);
     if (selectedProvider) {
-      void signIn(selectedProvider);
+      void signIn(selectedProvider, { callbackUrl });
     }
   };
 
@@ -46,7 +53,7 @@ export function SignInWithConsent() {
       <Button
         onClick={() => {
           if (hasConsent) {
-            void signIn("discord");
+            handleSignIn("discord");
           } else {
             setSelectedProvider("discord");
             setShowConsent(true);
@@ -61,7 +68,7 @@ export function SignInWithConsent() {
       <Button
         onClick={() => {
           if (hasConsent) {
-            void signIn("google");
+            handleSignIn("google");
           } else {
             setSelectedProvider("google");
             setShowConsent(true);

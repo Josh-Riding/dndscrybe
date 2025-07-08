@@ -1,15 +1,12 @@
 import { db } from "@/server/db";
 import { auth } from "@/server/auth";
 import TranscriptionCard from "../_components/TranscriptionCard";
+import { redirect } from "next/navigation";
 
 export default async function ParsedPage() {
   const session = await auth();
   if (!session) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] text-[#f5f5f5]">
-        <p>Please log in to see your transcriptions.</p>
-      </div>
-    );
+    redirect("/");
   }
 
   const transcriptions = await db.query.transcriptions.findMany({

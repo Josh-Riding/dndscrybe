@@ -144,7 +144,7 @@ export default function TranscriptionCard({
                   </button>
                 )}
               </Menu.Item>
-              <Menu.Item>
+              {/* <Menu.Item>
                 {({ active }) => (
                   <button
                     onClick={() => console.log("Delete clicked")}
@@ -155,7 +155,7 @@ export default function TranscriptionCard({
                     Delete
                   </button>
                 )}
-              </Menu.Item>
+              </Menu.Item> */}
             </div>
           </Menu.Items>
         </Menu>

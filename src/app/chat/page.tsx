@@ -1,15 +1,12 @@
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
 import ClientChatPage from "../_components/ClientChatPage";
+import { redirect } from "next/navigation";
 
 export default async function ChatPage() {
   const session = await auth();
   if (!session) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] text-[#f5f5f5]">
-        <p>Please log in to access the chat.</p>
-      </div>
-    );
+    redirect("/");
   }
 
   const transcriptions = await db.query.transcriptions.findMany({

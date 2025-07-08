@@ -1,4 +1,6 @@
 import Checkout from "@/app/_components/checkout";
+import { auth } from "@/server/auth";
+import { redirect } from "next/navigation";
 
 const validPacks = [
   "guild-pack",
@@ -14,6 +16,10 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { creditPack } = await params;
+  const session = await auth();
+  if (!session) {
+    redirect(`/auth/signin?callbackUrl=/purchase-credits/${creditPack}`);
+  }
 
   if (!validPacks.includes(creditPack)) {
     throw new Error("Invalid credit pack");
