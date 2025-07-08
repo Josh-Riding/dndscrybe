@@ -11,12 +11,15 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { SignInWithConsent } from "./SignInWithConsent";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
   const [mounted, setMounted] = React.useState(false);
+
+  const router = useRouter();
 
   React.useEffect(() => {
     setMounted(true);
@@ -90,7 +93,15 @@ export default function Navbar() {
                   Logout
                 </button>
               ) : (
-                <SignInWithConsent />
+                <button
+                  onClick={() => router.push("/auth/signin")}
+                  className={navigationMenuTriggerStyle({
+                    className:
+                      "rounded-md bg-red-700 px-3 py-1.5 text-sm font-medium text-red-100 transition-colors hover:bg-red-800 hover:text-white",
+                  })}
+                >
+                  Login
+                </button>
               )}
             </NavigationMenuItem>
           </NavigationMenuList>
@@ -135,9 +146,15 @@ export default function Navbar() {
               Logout
             </button>
           ) : (
-            <div className="w-4/5">
-              <SignInWithConsent />
-            </div>
+            <button
+              onClick={() => {
+                router.push("/auth/signin");
+                setIsOpen(false);
+              }}
+              className="w-4/5 rounded-md bg-red-700 px-4 py-2 text-center text-sm font-medium text-red-100 transition-colors hover:bg-red-800"
+            >
+              Login
+            </button>
           )}
         </div>
       )}

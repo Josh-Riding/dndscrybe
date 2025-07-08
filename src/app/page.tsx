@@ -5,8 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { FAQSection } from "./_components/FAQ";
 import HowItWorks from "./_components/HowItWorks";
+import GetAdventureButton from "./_components/GetAdventureButton";
+import { auth } from "@/server/auth";
 
 export default async function Home() {
+  const session = await auth();
   return (
     <HydrateClient>
       <div className="flex min-h-screen flex-col bg-[#1e1e1e] text-[#f5f5f5]">
@@ -27,11 +30,7 @@ export default async function Home() {
             </p>
 
             <div className="mt-10">
-              <Link href="/upload">
-                <Button className="rounded-2xl bg-[#df2935] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#b2222b]">
-                  Get Your Adventure Transcribed Now
-                </Button>
-              </Link>
+              <GetAdventureButton session={session} />
               <p className="mt-2 text-xs font-semibold tracking-wide text-white/70">
                 Start for Free
               </p>
