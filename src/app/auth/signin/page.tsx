@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { SignInWithConsent } from "@/app/_components/SignInWithConsent";
 
 export default function SignInPage() {
@@ -21,7 +22,9 @@ export default function SignInPage() {
         </p>
 
         <div className="mt-10 w-full max-w-sm rounded-xl border border-[#3a3a3a] bg-[#1e1e1e] p-6 shadow-lg">
-          <SignInWithConsent />
+          <Suspense fallback={<p>Loading sign in...</p>}>
+            <SignInWithConsent />
+          </Suspense>
           <p className="mt-4 text-xs text-gray-400">
             By signing in, you agree to our{" "}
             <a href="/terms" className="text-[#df2935] hover:underline">
