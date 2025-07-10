@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 
   // Handle checkout session completion
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
+    const session = event.data.object;
 
     const paymentIntentId = session.payment_intent as string | null;
     let email = session.customer_email;
