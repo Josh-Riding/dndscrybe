@@ -49,6 +49,7 @@ export async function fetchClientSecret(
       },
     ],
     mode: "payment",
+    customer_email: authSession.user.email ?? undefined,
     return_url: `${origin}/return?session_id={CHECKOUT_SESSION_ID}`,
     payment_intent_data: {
       metadata: {

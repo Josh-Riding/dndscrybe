@@ -2,6 +2,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
+import { sendWelcomeEmail } from "@/app/utils/email";
 
 import { db } from "@/server/db";
 import {
@@ -65,5 +66,16 @@ export const authConfig = {
         id: user.id,
       },
     }),
+  },
+  events: {
+    async signIn({ user, isNewUser }) {
+      if (isNewUser && user.email) {
+        try {
+          await sendWelcomeEmail(user.email);
+        } catch (err) {
+          console.error("Failed to send welcome email", err);
+        }
+      }
+    },
   },
 } satisfies NextAuthConfig;
