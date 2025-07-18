@@ -73,7 +73,7 @@ export default function HowItWorks() {
             &times;
           </button>
           <video
-            src="/videos/demo_vid.mp4"
+            src="/videos/dndscrybe_demo.mp4"
             controls
             autoPlay
             className="w-full max-w-4xl rounded-lg shadow-lg"
